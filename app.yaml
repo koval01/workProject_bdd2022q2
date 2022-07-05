@@ -1,0 +1,2 @@
+runtime: python39
+entrypoint: cd imgcollector && gunicorn --workers=3 --threads=3 -b :$PORT imgcollector.wsgi:application
