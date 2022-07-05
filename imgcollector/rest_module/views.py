@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import generics, status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -13,9 +13,10 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
 
 
-class PhotoList(APIView):
+class PhotoLoad(APIView):
     def post(self, request, format=None):
         serializer = PhotoSerializer(data=request.data)
+        permission_classes = [IsAuthenticated]
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
