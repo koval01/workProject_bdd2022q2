@@ -6,8 +6,6 @@ from .models import Photo
 
 
 class PhotoSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(required=True)
-
     class Meta:
         model = Photo
         fields = ('id', 'name', 'image')
