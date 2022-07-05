@@ -82,6 +82,8 @@ REST_FRAMEWORK = {
     ]
 }
 
+# AUTH_USER_MODEL = 'rest_module.CustomUser'
+
 WSGI_APPLICATION = 'imgcollector.wsgi.application'
 
 
