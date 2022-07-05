@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ["*"] if DEBUG else [getenv("HOST")]
 
 INSTALLED_APPS = [
     'rest_framework',
+    'rest_module',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -71,6 +72,14 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_module.permissions.IsOwnerOrReadOnly'
+    ]
+}
 
 WSGI_APPLICATION = 'imgcollector.wsgi.application'
 
