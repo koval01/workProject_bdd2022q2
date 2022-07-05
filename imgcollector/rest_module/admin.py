@@ -1,36 +1,20 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
 
-from .models import CustomUser
+from .models import Customer
+
+
+class CustomerInline(admin.StackedInline):
+    model = Customer
+    can_delete = False
+    verbose_name_plural = 'Customer'
 
 
 class CustomUserAdmin(UserAdmin):
-    list_display = (
-        'username', 'email', 'first_name', 'last_name',
-        'is_staff', 'customer_type'
-    )
-    fieldsets = (
-        (None, {
-            'fields': ('username', 'password')
-        }),
-        ('Personal info', {
-            'fields': ('first_name', 'last_name', 'email')
-        }),
-        ('Permissions', {
-            'fields': (
-                'is_active', 'is_staff', 'is_superuser',
-                'groups', 'user_permissions'
-            )
-        }),
-        ('Important dates', {
-            'fields': ('last_login', 'date_joined')
-        }),
-        ('Additional info', {
-            'fields': ('customer_type',)
-        })
-    )
-    add_fieldsets = fieldsets
-    list_filter = ('is_staff', 'customer_type')
+    inlines = (CustomerInline,)
 
 
-admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)
+admin.site.site_header = 'Project_bdd2022q2'
