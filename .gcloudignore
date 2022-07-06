@@ -16,6 +16,7 @@ Pipfile
 Pipfile.lock
 Procfile
 imgcollector/static/
+imgcollector/media/
 
 # Python pycache:
 __pycache__/
