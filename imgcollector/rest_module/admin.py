@@ -67,8 +67,18 @@ class LogEntryAdmin(admin.ModelAdmin):
     list_per_page = 15
 
 
+class AdminPhoto(admin.ModelAdmin):
+    list_display = ("name", "created_at", "creator")
+    list_filter = ("created_at", "updated_at")
+    readonly_fields = ("created_at", "updated_at")
+    search_fields = ("name", "creator")
+    ordering = ("-created_at",)
+
+    list_per_page = 15
+
+
 admin.site.register(User, UserDjangoAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
-admin.site.register(Photo)
+admin.site.register(Photo, AdminPhoto)
 
 admin.site.site_header = 'Project_bdd2022q2'
