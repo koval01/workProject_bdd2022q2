@@ -109,6 +109,9 @@ DATABASES = {
         'PASSWORD': DATABASE_DATA_DICT["password"],
         'HOST':     DATABASE_DATA_DICT["host"],
         'PORT':     DATABASE_DATA_DICT["port"],
+        'TEST': {
+            'NAME': 'test_django',
+        },
     }
 }
 
