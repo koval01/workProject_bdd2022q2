@@ -1,14 +1,26 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
-from .models import Photo
+from .models import Photo, CustomUser as User
 
 
 class PhotoSerializer(serializers.ModelSerializer):
+    creator = serializers.ReadOnlyField(source='creator.username')
+
     class Meta:
         model = Photo
-        fields = ('id', 'name', 'image')
+        fields = ('id', 'name', 'image', 'creator')
+
+
+class UserSerializer(serializers.ModelSerializer):
+    photos = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = [
+            'id', 'username', 'email', 'is_active', 'is_staff',
+            'customer_type', 'photos'
+        ]
 
 
 class RegisterSerializer(serializers.ModelSerializer):
