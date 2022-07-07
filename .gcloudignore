@@ -17,6 +17,8 @@ Pipfile.lock
 Procfile
 imgcollector/static/
 imgcollector/media/
+docker-compose.yml
+Dockerfile
 
 # Python pycache:
 __pycache__/
