@@ -15,3 +15,23 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
         # Write permissions are only allowed to the creator
         return obj.creator == request.user
+
+
+class IsObjectOwner(permissions.BasePermission):
+    # for view permission
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated
+
+    # for object level permissions
+    def has_object_permission(self, request, view, obj):
+        return obj.creator.id == request.user.id
+
+
+class IsMyProfile(permissions.BasePermission):
+    # for view permission
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated
+
+    # for object level permissions
+    def has_object_permission(self, request, view, obj):
+        return obj == request.user
