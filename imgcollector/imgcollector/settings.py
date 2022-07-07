@@ -12,9 +12,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 from os import getenv
-from sys import argv
 import re as regex
 import os
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,12 +27,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = getenv("DJANGO_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if "debug" in argv else False
+DEBUG = True if "debug" in sys.argv else False
 
 ALLOWED_HOSTS = ["*"] if DEBUG else [getenv("HOST")]
 
 
 # Application definition
+
+AUTH_USER_MODEL = 'rest_module.CustomUser'
 
 INSTALLED_APPS = [
     'rest_framework',
@@ -46,8 +48,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -81,8 +83,6 @@ REST_FRAMEWORK = {
         'rest_module.permissions.IsOwnerOrReadOnly'
     ]
 }
-
-# AUTH_USER_MODEL = 'rest_module.CustomUser'
 
 WSGI_APPLICATION = 'imgcollector.wsgi.application'
 
@@ -161,6 +161,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
