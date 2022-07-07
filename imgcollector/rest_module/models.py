@@ -1,6 +1,6 @@
-from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+import uuid
 
 
 class CustomUserManager(BaseUserManager):
@@ -72,9 +72,14 @@ class CustomUser(AbstractUser):
         return True
 
 
+def get_file_path(instance, filename):
+    ext = filename.split('.')[-1]
+    return "%s.%s" % (uuid.uuid4(), ext)
+
+
 class Photo(models.Model):
     name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to='media/photo/%Y/%m/%d/', null=True)
+    image = models.ImageField(upload_to=get_file_path, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey('rest_module.CustomUser', related_name='photos', on_delete=models.CASCADE)
