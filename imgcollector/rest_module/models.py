@@ -84,6 +84,14 @@ class Photo(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey('rest_module.CustomUser', related_name='photos', on_delete=models.CASCADE)
 
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #
+    #     if self.image:
+    #         # image compress
+    #         img = Image.open(self.image.path)
+    #         img.save(self.image.path, quality=70)
+
     def __str__(self):
         return f"{self.creator} | {self.id} - {self.name}"
 
