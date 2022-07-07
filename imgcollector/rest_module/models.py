@@ -79,7 +79,7 @@ def get_file_path(instance, filename):
 
 class Photo(models.Model):
     name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to=get_file_path, null=True)
+    image = models.ImageField(upload_to=get_file_path, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey('rest_module.CustomUser', related_name='photos', on_delete=models.CASCADE)
