@@ -1,3 +1,4 @@
+import copy
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
@@ -81,9 +82,24 @@ def get_file_path(instance, filename):
     return "%s.%s" % (uuid.uuid4(), ext)
 
 
+def build_thumbnail(_image: Image, _height: int = 200) -> BytesIO:
+    _image = copy.deepcopy(_image)
+    new_width = int(_height / _image.height * _image.width)
+    _image = _image.resize((new_width, _height))
+
+    output = BytesIO()
+
+    _image.save(output, format='JPEG', quality=80)
+    output.seek(0)
+
+    return output
+
+
 class Photo(models.Model):
     name = models.CharField(max_length=255)
     image = models.ImageField(upload_to=get_file_path, null=False)
+    thumbnail_200 = models.ImageField(upload_to=get_file_path, editable=False, null=True)
+    thumbnail_400 = models.ImageField(upload_to=get_file_path, editable=False, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey('rest_module.CustomUser', related_name='photos', on_delete=models.CASCADE)
@@ -96,10 +112,16 @@ class Photo(models.Model):
         im.save(output, format='JPEG', quality=65)
         output.seek(0)
 
-        # change the imagefield value to be compressed image
-        self.image = InMemoryUploadedFile(
-            output, 'ImageField', "%s.jpg" % self.image.name.split('.')[0], 'image/jpeg',
-            sys.getsizeof(output), None)
+        def _save_image(_output: BytesIO) -> InMemoryUploadedFile:
+            return InMemoryUploadedFile(
+                _output, 'ImageField', "%s.jpg" % self.image.name.split('.')[0],
+                'image/jpeg',
+                sys.getsizeof(output), None)
+
+        self.image = _save_image(output)
+
+        self.thumbnail_200 = _save_image(build_thumbnail(im, _height=200))
+        self.thumbnail_400 = _save_image(build_thumbnail(im, _height=400))
 
         super(Photo, self).save()
 
