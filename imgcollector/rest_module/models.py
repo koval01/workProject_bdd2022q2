@@ -1,6 +1,10 @@
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from PIL import Image
 import uuid
+import sys
 
 
 class CustomUserManager(BaseUserManager):
@@ -84,13 +88,20 @@ class Photo(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     creator = models.ForeignKey('rest_module.CustomUser', related_name='photos', on_delete=models.CASCADE)
 
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #
-    #     if self.image:
-    #         # image compress
-    #         img = Image.open(self.image.path)
-    #         img.save(self.image.path, quality=70)
+    def save(self, *args, **kwargs):
+        im = Image.open(self.image)
+
+        output = BytesIO()
+
+        im.save(output, format='JPEG', quality=65)
+        output.seek(0)
+
+        # change the imagefield value to be compressed image
+        self.image = InMemoryUploadedFile(
+            output, 'ImageField', "%s.jpg" % self.image.name.split('.')[0], 'image/jpeg',
+            sys.getsizeof(output), None)
+
+        super(Photo, self).save()
 
     def __str__(self):
         return f"{self.creator} | {self.id} - {self.name}"
