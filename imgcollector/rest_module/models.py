@@ -89,7 +89,7 @@ def build_thumbnail(_image: Image, _height: int = 200) -> BytesIO:
 
     output = BytesIO()
 
-    _image.save(output, format='JPEG', quality=80)
+    _image.save(output, format='JPEG', quality=95)
     output.seek(0)
 
     return output
@@ -106,6 +106,7 @@ class Photo(models.Model):
 
     def save(self, *args, **kwargs):
         im = Image.open(self.image)
+        im = im.convert('RGB')
 
         output = BytesIO()
 

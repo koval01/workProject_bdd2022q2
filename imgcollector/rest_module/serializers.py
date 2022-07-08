@@ -1,18 +1,42 @@
+from abc import ABC
+
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from .models import Photo, CustomUser as User
 
 
+class ThumbnailsField(serializers.Field, ABC):
+
+    def __init__(self, **kwargs):
+        kwargs['read_only'] = True
+        super().__init__(**kwargs)
+
+    def to_representation(self, value):
+        ret = {
+            "thumbnail_200": value.thumbnail_200.url,
+            "thumbnail_400": value.thumbnail_400.url
+        }
+        return ret
+
+    def to_internal_value(self, data):
+        pass
+
+
 class PhotoSerializer(serializers.ModelSerializer):
+
     creator = serializers.ReadOnlyField(source='creator.username')
+    thumbnails = ThumbnailsField(source='*')
 
     class Meta:
         model = Photo
-        fields = ('id', 'name', 'thumbnail_200', 'thumbnail_400', 'image', 'creator')
+        fields = (
+            'id', 'name', 'image', 'thumbnails',
+            'creator', 'created_at')
 
 
 class UserSerializer(serializers.ModelSerializer):
+
     photos = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
@@ -24,6 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
