@@ -21,6 +21,7 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
       - DJANGO_KEY=example_key_for_django_3929838
       - HOST=localhost
+      - NGINX_DOCKER=1
     depends_on:
       - db
     command:

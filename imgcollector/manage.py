@@ -15,11 +15,15 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
-    debug_flag = "debug"
-    sys.argv.append(sys.argv.pop(sys.argv.index(debug_flag))) \
-        if debug_flag in sys.argv else None
-    execute_from_command_line(
-        sys.argv[:-1] if debug_flag in sys.argv else sys.argv)
+
+    exclude_flags = ["debug", "docker_test"]
+    args = sys.argv
+    for flag in exclude_flags:
+        sys.argv.append(sys.argv.pop(sys.argv.index(flag))) \
+            if flag in sys.argv else None
+        args = sys.argv[:-1] if flag in sys.argv else args
+
+    execute_from_command_line(args)
 
 
 if __name__ == '__main__':

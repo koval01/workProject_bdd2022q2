@@ -27,8 +27,10 @@ SECRET_KEY = getenv("DJANGO_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if "debug" in sys.argv else False
+NGINX_DOCKER = True if "docker_test" in sys.argv else (
+    True if getenv("NGINX_DOCKER") else False)
 
-ALLOWED_HOSTS = ["*"] if DEBUG else [getenv("HOST")]
+ALLOWED_HOSTS = ["*"] if (DEBUG or NGINX_DOCKER) else [getenv("HOST")]
 
 # Application definition
 
