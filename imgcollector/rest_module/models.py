@@ -110,7 +110,7 @@ class Photo(models.Model):
 
         output = BytesIO()
 
-        im.save(output, format='JPEG', quality=65)
+        im.save(output, format='JPEG', quality=60)
         output.seek(0)
 
         def _save_image(_output: BytesIO) -> InMemoryUploadedFile:
