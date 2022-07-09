@@ -39,7 +39,7 @@ class PhotoSerializer(serializers.ModelSerializer):
 
         representation = super().to_representation(instance)
         paid_customer_types = [v[0] for v in User.CUSTOMER_TYPE if v[0] != "basic"]
-        if user.customer_type not in paid_customer_types:
+        if user.customer_type not in paid_customer_types and not user.is_superuser:
             representation["image"] = None
             representation["thumbnails"]["thumbnail_400"] = None
         return representation
