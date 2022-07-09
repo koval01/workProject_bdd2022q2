@@ -1,6 +1,6 @@
 FROM python:3.9.13
 
-ENV APP_ROOT /src
+ENV APP_ROOT /imgcollector
 ENV CONFIG_ROOT /config
 
 
