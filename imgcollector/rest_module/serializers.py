@@ -38,7 +38,7 @@ class PhotoSerializer(serializers.ModelSerializer):
             user = request.user
 
         representation = super().to_representation(instance)
-        if user.customer_type == "basic" or user.is_superuser:
+        if user.customer_type == "basic" or not user.is_superuser:
             representation["image"] = None
             representation["thumbnails"]["thumbnail_400"] = None
         return representation
