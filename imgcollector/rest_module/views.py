@@ -31,7 +31,9 @@ class PhotoList(generics.ListCreateAPIView):
         for the currently authenticated user.
         """
         user = self.request.user
-        return Photo.objects.filter(creator=user)
+        # display all object only for superuser
+        _filter = dict(creator=user) if not user.is_superuser else {}
+        return Photo.objects.filter(**_filter)
 
     permission_classes = (IsAuthenticated,)
     serializer_class = PhotoSerializer

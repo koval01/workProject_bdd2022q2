@@ -8,9 +8,9 @@ from .models import Photo, CustomUser as User
 
 class ThumbnailsField(serializers.Field, ABC):
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         kwargs['read_only'] = True
-        super().__init__(**kwargs)
+        super().__init__(*args, **kwargs)
 
     def to_representation(self, value):
         ret = {
@@ -18,9 +18,6 @@ class ThumbnailsField(serializers.Field, ABC):
             "thumbnail_400": value.thumbnail_400.url
         }
         return ret
-
-    def to_internal_value(self, data):
-        pass
 
 
 class PhotoSerializer(serializers.ModelSerializer):
@@ -33,6 +30,18 @@ class PhotoSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'name', 'image', 'thumbnails',
             'creator', 'created_at')
+
+    def to_representation(self, instance):
+        user = None
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
+
+        representation = super().to_representation(instance)
+        if user.customer_type == "basic" or user.is_superuser:
+            representation["image"] = None
+            representation["thumbnails"]["thumbnail_400"] = None
+        return representation
 
 
 class UserSerializer(serializers.ModelSerializer):
