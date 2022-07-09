@@ -10,15 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-from pathlib import Path
-from os import getenv
-import re as regex
 import os
+import re as regex
 import sys
+from os import getenv
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -30,7 +29,6 @@ SECRET_KEY = getenv("DJANGO_KEY")
 DEBUG = True if "debug" in sys.argv else False
 
 ALLOWED_HOSTS = ["*"] if DEBUG else [getenv("HOST")]
-
 
 # Application definition
 
@@ -93,7 +91,6 @@ REST_FRAMEWORK = {
 
 WSGI_APPLICATION = 'imgcollector.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
@@ -110,12 +107,12 @@ DATABASE_DATA_DICT = regex.search(
 
 DATABASES = {
     'default': {
-        'ENGINE':   'django.db.backends.postgresql_psycopg2',
-        'NAME':     DATABASE_DATA_DICT["name"],
-        'USER':     DATABASE_DATA_DICT["user"],
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DATABASE_DATA_DICT["name"],
+        'USER': DATABASE_DATA_DICT["user"],
         'PASSWORD': DATABASE_DATA_DICT["password"],
-        'HOST':     DATABASE_DATA_DICT["host"],
-        'PORT':     DATABASE_DATA_DICT["port"],
+        'HOST': DATABASE_DATA_DICT["host"],
+        'PORT': DATABASE_DATA_DICT["port"],
         'TEST': {
             'NAME': 'test_django',
         },
@@ -138,7 +135,6 @@ LOGGING = {
     },
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -157,7 +153,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -167,7 +162,6 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/

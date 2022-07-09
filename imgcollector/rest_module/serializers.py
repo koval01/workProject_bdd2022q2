@@ -1,8 +1,9 @@
 from abc import ABC
 
+from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from django.contrib.auth.password_validation import validate_password
+
 from .models import Photo, CustomUser as User
 
 
@@ -21,7 +22,6 @@ class ThumbnailsField(serializers.Field, ABC):
 
 
 class PhotoSerializer(serializers.ModelSerializer):
-
     creator = serializers.ReadOnlyField(source='creator.username')
     thumbnails = ThumbnailsField(source='*')
 
@@ -46,7 +46,6 @@ class PhotoSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     photos = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
@@ -58,7 +57,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]

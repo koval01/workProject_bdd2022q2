@@ -1,9 +1,11 @@
+import json
+import logging
+
 from django.contrib import admin
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.admin import UserAdmin
+
 from .models import Photo, CustomUser as User
-import json
-import logging
 
 logger = logging.getLogger(__name__)
 

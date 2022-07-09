@@ -1,11 +1,12 @@
 import copy
+import sys
+import uuid
 from io import BytesIO
+
+from PIL import Image
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
-from PIL import Image
-import uuid
-import sys
 
 
 class CustomUserManager(BaseUserManager):

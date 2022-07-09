@@ -1,10 +1,9 @@
 from django.urls import path
-from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework.authtoken.views import obtain_auth_token
-
-from .views import RegisterView, UserList, UserDetail, PhotoList, PhotoDetail
+from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from .views import RegisterView, UserList, UserDetail, PhotoList, PhotoDetail
 
 urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
