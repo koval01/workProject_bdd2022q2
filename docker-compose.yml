@@ -18,7 +18,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL="postgres://postgres:postgres@localhost:5432/postgres"
+      - DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
       - DJANGO_KEY=example_key_for_django_3929838
       - HOST=localhost
     depends_on:
@@ -27,7 +27,7 @@ services:
       "gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
 
   nginx:
-    image: nginx:1.17
+    image: nginx:1.18
     container_name: ngx
     ports:
       - "80:80"
