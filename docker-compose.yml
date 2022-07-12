@@ -36,3 +36,10 @@ services:
       - ./nginx:/etc/nginx/conf.d
     depends_on:
       - app
+
+  web-static:
+    build: .
+    volumes:
+      - /usr/src/app/static
+    env_file: .env
+    command: manage.py collectstatic
