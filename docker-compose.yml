@@ -21,6 +21,7 @@ services:
       - NGINX_DOCKER=1
     depends_on:
       - db
+      - web-static
     command:
       "gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
 
@@ -39,6 +40,4 @@ services:
     volumes:
       - /usr/src/app/static
     env_file: .env
-    depends_on:
-      - app
     command: manage.py collectstatic
