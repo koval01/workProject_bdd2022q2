@@ -1,42 +1,37 @@
 version: "3.9"
 
 services:
-  db:
-    image: postgres
+  web:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    command: "gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
     volumes:
-      - ./data/db:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    env_file: .env
-  app:
-    build: imgcollector
-    container_name: django-gunicorn
-    restart: always
-    ports:
-      - "8000:8000"
-    environment:
-      - DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
-      - DJANGO_KEY=example_key_for_django_3929838
-      - HOST=localhost
-      - NGINX_DOCKER=1
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+    expose:
+      - 8000
+    env_file:
+      - ./.env
     depends_on:
       - db
-    command:
-      "gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
-
+  db:
+    image: "postgres:14.0"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
   nginx:
-    image: nginx:1.18
-    container_name: ngx
+    build: ./nginx
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
     ports:
       - "80:80"
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
     depends_on:
-      - app
+      - web
 
-  web-static:
-    build: .
-    volumes:
-      - /usr/src/app/static
-    env_file: .env
-    command: manage.py collectstatic
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
