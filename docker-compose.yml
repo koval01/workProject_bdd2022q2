@@ -21,7 +21,8 @@ services:
       - db
       - migration
       - collect_static
-      - create_admin
+      - create_cache
+#      - create_admin
     command:
       "gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
 
@@ -41,12 +42,19 @@ services:
     depends_on:
       - db
 
-  create_admin:
+  create_cache:
     build: imgcollector
-    command: "python manage.py --username admin"
+    command: "python manage.py createcachetable"
     env_file: .env
     depends_on:
       - db
+
+#  create_admin:
+#    build: imgcollector
+#    command: "python manage.py"
+#    env_file: .env
+#    depends_on:
+#      - db
 
   nginx:
     image: nginx:1.18
