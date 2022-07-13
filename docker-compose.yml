@@ -25,12 +25,14 @@ services:
       "gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
 
   migration:
+    container_name: django-manager
     command: "python manage.py migrate --noinput"
     env_file: .env
     depends_on:
       - db
 
   collect_static:
+    container_name: django-manager
     command: "python manage.py collectstatic --noinput"
     env_file: .env
     volumes:
