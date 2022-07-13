@@ -14,17 +14,29 @@ services:
     restart: always
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres
-      - DJANGO_KEY=example_key_for_django_3929838
-      - HOST=localhost
-      - NGINX_DOCKER=1
+    env_file: .env
     volumes:
       - /static:/app/static
     depends_on:
       - db
+      - migration
+      - collect_static
     command:
       "gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
+
+  migration:
+    command: "python manage.py migrate --noinput"
+    env_file: .env
+    depends_on:
+      - db
+
+  collect_static:
+    command: "python manage.py collectstatic --noinput"
+    env_file: .env
+    volumes:
+      - /static:/app/static
+    depends_on:
+      - db
 
   nginx:
     image: nginx:1.18
@@ -33,6 +45,6 @@ services:
       - "80:80"
     volumes:
       - ./nginx:/etc/nginx/conf.d
-      - /static:/static
+      - /static:/app/static
     depends_on:
       - app
