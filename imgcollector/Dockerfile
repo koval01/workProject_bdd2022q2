@@ -8,11 +8,11 @@ RUN mkdir ${CONFIG_ROOT}
 COPY requirements.txt ${CONFIG_ROOT}/requirements.txt
 RUN pip install -r ${CONFIG_ROOT}/requirements.txt
 
-RUN python manage.py makemigrations
-RUN python manage.py migrate
+RUN python ${APP_ROOT}/manage.py makemigrations
+RUN python${APP_ROOT}/manage.py migrate
 
 RUN mkdir -p /app/static
-RUN python manage.py collectstatic --no-input
+RUN python ${APP_ROOT}/manage.py collectstatic --no-input
 
 RUN mkdir ${APP_ROOT}
 WORKDIR ${APP_ROOT}
