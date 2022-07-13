@@ -20,7 +20,7 @@ services:
       - HOST=localhost
       - NGINX_DOCKER=1
     volumes:
-      - /static:/static
+      - /static:/app/static
     depends_on:
       - db
     command:
