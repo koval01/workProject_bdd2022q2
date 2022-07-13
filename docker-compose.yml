@@ -24,7 +24,7 @@ services:
     depends_on:
       - db
     command:
-      "python manage.py makemigrations;python manage.py migrate;gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
+      "gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
 
   nginx:
     image: nginx:1.18
