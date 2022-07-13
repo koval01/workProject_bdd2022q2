@@ -19,11 +19,12 @@ services:
       - DJANGO_KEY=example_key_for_django_3929838
       - HOST=localhost
       - NGINX_DOCKER=1
+    volumes:
+      - /static:/static
     depends_on:
       - db
-      - web-static
     command:
-      "gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
+      "python manage.py makemigrations;python manage.py migrate;gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
 
   nginx:
     image: nginx:1.18
@@ -32,12 +33,6 @@ services:
       - "80:80"
     volumes:
       - ./nginx:/etc/nginx/conf.d
+      - /static:/static
     depends_on:
       - app
-
-  web-static:
-    build: .
-    volumes:
-      - /usr/src/app/static
-    env_file: .env
-    command: manage.py collectstatic
