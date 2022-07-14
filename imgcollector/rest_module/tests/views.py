@@ -18,7 +18,7 @@ class ViewsTestCase(TestCase):
     def _test_get_users(self) -> None:
         self.assert_(self.api_key != "")
 
-        resp = Client().get("/users/", **{"AUTHORIZATION": f"Token {self.api_key}"})
+        resp = Client().get("/users/", AUTHORIZATION=f"Token {self.api_key}")
         self.assertEqual(resp.status_code, 200)
 
     def test_images_without_auth(self) -> None:
@@ -28,7 +28,7 @@ class ViewsTestCase(TestCase):
     def _test_get_images(self) -> None:
         self.assert_(self.api_key != "")
 
-        resp = Client().get("/images/", **{"AUTHORIZATION": f"Token {self.api_key}"})
+        resp = Client().get("/images/", AUTHORIZATION=f"Token {self.api_key}")
         self.assertEqual(resp.status_code, 200)
 
     def test_get_register(self) -> None:
