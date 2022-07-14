@@ -56,7 +56,7 @@ services:
 
   django_tests:
     build: imgcollector
-    command: "bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python manage.py test'"
+    command: "bash -c 'while !</dev/tcp/db/5432; do sleep 10; done; python manage.py test'"
     env_file: .env
     volumes:
       - /static:/app/static
