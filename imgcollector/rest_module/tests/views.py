@@ -28,7 +28,7 @@ class ViewsTestCase(TestCase):
             "password": self.password
         })
         self.assertEqual(resp_generate_key.status_code, 200)
-        self.assert_("token" in resp_generate_key.json().items())
+        self.assert_("token" in resp_generate_key.json().keys())
 
     def test_post_register(self) -> None:
         resp_null = Client().post("/register/")
@@ -60,8 +60,8 @@ class ViewsTestCase(TestCase):
         self.assertEqual(resp_registered.status_code, 201)
         self.assert_(
             len([
-                i for i in resp_registered.json().items()
-                if i[0] in ["username", "email", "first_name", "last_name"]
+                i for i in resp_registered.json().keys()
+                if i in ["username", "email", "first_name", "last_name"]
             ]) == 4
         )
         self._register_key()
