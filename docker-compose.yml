@@ -8,11 +8,6 @@ services:
     ports:
       - "5432:5432"
     env_file: .env
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 3s
-      retries: 3
 
   app:
     build: imgcollector
@@ -25,8 +20,7 @@ services:
       - /static:/app/static
       - /media:/app/media
     depends_on:
-      db:
-        condition: service_healthy
+      - db
       - after_start_task
     command:
       "bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
