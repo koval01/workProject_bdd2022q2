@@ -14,9 +14,10 @@ class ThumbnailsField(serializers.Field, ABC):
         super().__init__(*args, **kwargs)
 
     def to_representation(self, value):
+        request = self.context.get('request')
         ret = {
-            "thumbnail_200": value.thumbnail_200.url,
-            "thumbnail_400": value.thumbnail_400.url
+            "thumbnail_200": request.build_absolute_uri(value.thumbnail_200.url),
+            "thumbnail_400": request.build_absolute_uri(value.thumbnail_400.url)
         }
         return ret
 
