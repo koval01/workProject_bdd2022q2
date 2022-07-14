@@ -35,7 +35,7 @@ class ViewsTestCase(TestCase):
         resp_no_password2 = Client().post("/register/", {
             "username": self.username,
             "password": self.password,
-            "password2": "",
+            "password2": self.password,
             "email": self.email
         })
         self.assertEqual(resp_no_password2.status_code, 400)
