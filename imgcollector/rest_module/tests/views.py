@@ -11,13 +11,17 @@ class PollsViewsTestCase(TestCase):
         resp = Client().get("/images/")
         self.assertEqual(resp.status_code, 401)
 
-    def get_api_token_auth(self):
+    def test_get_api_token_auth(self):
         resp = Client().get("/api-token-auth/")
         self.assertEqual(resp.status_code, 405)
 
-    def post_api_token_auth(self):
+    def test_post_api_token_auth(self):
         resp_unknown_user = Client().post("/api-token-auth/")
         self.assertEqual(resp_unknown_user.status_code, 400)
+        self.assertEqual(resp_unknown_user.json(), {
+            "username": ["This field is required."],
+            "password": ["This field is required."]
+        })
         resp_unknown_user = Client().post("/api-token-auth/", {
             "username": "none",
             "password": "none"
