@@ -22,8 +22,7 @@ services:
     depends_on:
       - db
       - after_start_task
-    command:
-      "bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
+    command: "gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
 
   after_start_task:
     build: imgcollector
