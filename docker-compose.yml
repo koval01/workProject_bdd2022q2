@@ -27,40 +27,16 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      - migration
-      - collect_static
-      - create_cache
-      - django_tests
+      - after_start_task
     command:
       "bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
 
-  migration:
+  after_start_task:
     build: imgcollector
-    command: "python manage.py migrate --noinput"
-    env_file: .env
-    depends_on:
-      - db
-
-  collect_static:
-    build: imgcollector
-    command: "python manage.py collectstatic --noinput"
+    command: "python manage.py migrate; python manage.py collectstatic; python manage.py createcachetable; python manage.py test"
     env_file: .env
     volumes:
       - /static:/app/static
-    depends_on:
-      - db
-
-  create_cache:
-    build: imgcollector
-    command: "python manage.py createcachetable"
-    env_file: .env
-    depends_on:
-      - db
-
-  django_tests:
-    build: imgcollector
-    command: "python manage.py test"
-    env_file: .env
     depends_on:
       - db
 
