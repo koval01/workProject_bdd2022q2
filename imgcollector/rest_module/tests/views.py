@@ -4,7 +4,7 @@ from uuid import uuid4
 
 class ViewsTestCase(TestCase):
     def __init__(self, *args, **kwargs) -> None:
-        super(*args, **kwargs).__init__()
+        super().__init__(*args, **kwargs)
 
         self.username = f"user_{uuid4().hex}"
         self.password = uuid4().hex
