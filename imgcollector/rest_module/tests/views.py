@@ -30,6 +30,12 @@ class ViewsTestCase(TestCase):
 
         resp = Client().get("/images/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
         self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json(), {
+            "count": 0,
+            "next": None,
+            "previous": None,
+            "results": []
+        })
 
     def test_get_register(self) -> None:
         resp = Client().get("/register/")
