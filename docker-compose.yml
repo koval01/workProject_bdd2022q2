@@ -8,7 +8,6 @@ services:
     ports:
       - "5432:5432"
     env_file: .env
-
   app:
     build: imgcollector
     container_name: django-gunicorn
@@ -30,14 +29,14 @@ services:
 
   migration:
     build: imgcollector
-    command: "python manage.py migrate"
+    command: "python manage.py migrate --noinput"
     env_file: .env
     depends_on:
       - db
 
   collect_static:
     build: imgcollector
-    command: "python manage.py collectstatic"
+    command: "python manage.py collectstatic --noinput"
     env_file: .env
     volumes:
       - /static:/app/static
