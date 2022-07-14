@@ -51,8 +51,10 @@ class ViewsTestCase(TestCase):
         })
         self.assertEqual(resp_registered.status_code, 201)
         self.assert_(
-            ["username", "email", "first_name", "last_name"]
-            in resp_registered.json().items()
+            len([
+                i for i in resp_registered.json().items()
+                if i in ["username", "email", "first_name", "last_name"]
+            ]) == 4
         )
 
     def test_get_api_token_auth(self) -> None:
