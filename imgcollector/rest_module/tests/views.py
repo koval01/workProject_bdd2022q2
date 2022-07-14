@@ -9,15 +9,16 @@ class ViewsTestCase(TestCase):
         self.username = f"user_{uuid4().hex}"
         self.password = uuid4().hex
         self.email = f"{uuid4().hex}@mail.example"
-        self.api_key = None
+        self.api_key = ""
 
     def test_users_without_auth(self) -> None:
         resp = Client().get("/users/")
         self.assertEqual(resp.status_code, 401)
 
     def _test_get_users(self) -> None:
-        header = {"AUTHORIZATION": f"Token {self.api_key}"}
-        resp = Client().get("/users/", **header)
+        self.assert_(self.api_key != "")
+
+        resp = Client().get("/users/", **{"AUTHORIZATION": f"Token {self.api_key}"})
         self.assertEqual(resp.status_code, 200)
 
     def test_images_without_auth(self) -> None:
@@ -25,8 +26,9 @@ class ViewsTestCase(TestCase):
         self.assertEqual(resp.status_code, 401)
 
     def _test_get_images(self) -> None:
-        header = {"AUTHORIZATION": f"Token {self.api_key}"}
-        resp = Client().get("/images/", **header)
+        self.assert_(self.api_key != "")
+
+        resp = Client().get("/images/", **{"AUTHORIZATION": f"Token {self.api_key}"})
         self.assertEqual(resp.status_code, 200)
 
     def test_get_register(self) -> None:
