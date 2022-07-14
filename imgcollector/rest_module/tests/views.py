@@ -20,6 +20,9 @@ class ViewsTestCase(TestCase):
 
         resp = Client().get("/users/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
         self.assertEqual(resp.status_code, 403)  # only superuser
+        self.assertEqual(resp.json(), {
+            "detail": "You do not have permission to perform this action."
+        })
 
     def test_images_without_auth(self) -> None:
         resp = Client().get("/images/")
