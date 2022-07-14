@@ -31,6 +31,7 @@ class ViewsTestCase(TestCase):
             "password2": ["This field is required."],
             "email": ["This field is required."]
         })
+
         resp_no_password2 = Client().post("/register/", {
             "username": self.username,
             "password": self.password,
@@ -53,6 +54,7 @@ class ViewsTestCase(TestCase):
             "username": ["This field is required."],
             "password": ["This field is required."]
         })
+
         resp_unknown_user = Client().post("/api-token-auth/", {
             "username": "none",
             "password": "none"
@@ -61,3 +63,10 @@ class ViewsTestCase(TestCase):
         self.assertEqual(resp_unknown_user.json(), {
             "non_field_errors": ["Unable to log in with provided credentials."]
         })
+
+        resp_generate_key = Client().post("/api-token-auth/", {
+            "username": self.username,
+            "password": self.password
+        })
+        self.assertEqual(resp_generate_key.status_code, 200)
+        self.assert_("token" in resp_generate_key.json().items())
