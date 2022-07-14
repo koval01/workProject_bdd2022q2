@@ -10,6 +10,7 @@ class ViewsTestCase(TestCase):
         self.password = uuid4().hex
         self.email = f"{uuid4().hex}@mail.example"
         self.api_key = ""
+        self.refresh = ""
 
     def test_users_without_auth(self) -> None:
         resp = Client().get("/users/")
@@ -56,6 +57,30 @@ class ViewsTestCase(TestCase):
         self._test_get_images()
         self._test_get_users()
 
+    def _test_refresh_jwt(self) -> None:
+        self.assert_(self.refresh != "")
+
+        resp = Client().post("/token/refresh/", {
+            "username": self.username,
+            "password": self.password,
+            "refresh": self.refresh
+        })
+        self.assertEqual(resp.status_code, 200)
+        self.assert_("access" in resp.json().keys())
+
+    def _test_jwt_token(self) -> None:
+        resp = Client().post("/token/", {
+            "username": self.username,
+            "password": self.password
+        })
+        test_fields = ["refresh", "access"]
+        self.assertEqual(resp.status_code, 200)
+        self.assert_(len([
+            i for i in resp.json().keys()
+            if i in test_fields
+        ]) == len(test_fields))
+        self.refresh = resp.json()["refresh"]
+
     def test_post_register(self) -> None:
         resp_null = Client().post("/register/")
         self.assertEqual(resp_null.status_code, 400)
@@ -83,14 +108,17 @@ class ViewsTestCase(TestCase):
             "password2": self.password,
             "email": self.email
         })
+        test_fields = ["username", "email", "first_name", "last_name"]
         self.assertEqual(resp_registered.status_code, 201)
         self.assert_(
             len([
                 i for i in resp_registered.json().keys()
-                if i in ["username", "email", "first_name", "last_name"]
-            ]) == 4
+                if i in test_fields
+            ]) == len(test_fields)
         )
+
         self._register_key()
+        self._test_jwt_token()
 
     def test_get_api_token_auth(self) -> None:
         resp = Client().get("/api-token-auth/")
