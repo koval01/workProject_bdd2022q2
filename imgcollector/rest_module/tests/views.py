@@ -35,13 +35,25 @@ class ViewsTestCase(TestCase):
         resp_no_password2 = Client().post("/register/", {
             "username": self.username,
             "password": self.password,
-            "password2": self.password,
+            "password2": "",
             "email": self.email
         })
         self.assertEqual(resp_no_password2.status_code, 400)
         self.assertEqual(resp_no_password2.json(), {
             "password2": ["This field may not be blank."]
         })
+
+        resp_registered = Client().post("/register/", {
+            "username": self.username,
+            "password": self.password,
+            "password2": self.password,
+            "email": self.email
+        })
+        self.assertEqual(resp_registered.status_code, 201)
+        self.assert_(
+            ["username", "email", "first_name", "last_name"]
+            in resp_registered.json().items()
+        )
 
     def test_get_api_token_auth(self) -> None:
         resp = Client().get("/api-token-auth/")
