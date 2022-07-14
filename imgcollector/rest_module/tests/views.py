@@ -22,6 +22,14 @@ class ViewsTestCase(TestCase):
         resp = Client().get("/register/")
         self.assertEqual(resp.status_code, 405)
 
+    def _register_key(self) -> None:
+        resp_generate_key = Client().post("/api-token-auth/", {
+            "username": self.username,
+            "password": self.password
+        })
+        self.assertEqual(resp_generate_key.status_code, 200)
+        self.assert_("token" in resp_generate_key.json().items())
+
     def test_post_register(self) -> None:
         resp_null = Client().post("/register/")
         self.assertEqual(resp_null.status_code, 400)
@@ -56,6 +64,7 @@ class ViewsTestCase(TestCase):
                 if i in ["username", "email", "first_name", "last_name"]
             ]) == 4
         )
+        self._register_key()
 
     def test_get_api_token_auth(self) -> None:
         resp = Client().get("/api-token-auth/")
@@ -77,10 +86,3 @@ class ViewsTestCase(TestCase):
         self.assertEqual(resp_unknown_user.json(), {
             "non_field_errors": ["Unable to log in with provided credentials."]
         })
-
-        resp_generate_key = Client().post("/api-token-auth/", {
-            "username": self.username,
-            "password": self.password
-        })
-        self.assertEqual(resp_generate_key.status_code, 200)
-        self.assert_("token" in resp_generate_key.json().items())
