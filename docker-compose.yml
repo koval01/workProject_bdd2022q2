@@ -8,6 +8,12 @@ services:
     ports:
       - "5432:5432"
     env_file: .env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
   app:
     build: imgcollector
     container_name: django-gunicorn
@@ -19,13 +25,14 @@ services:
       - /static:/app/static
       - /media:/app/media
     depends_on:
-      - db
+      db:
+        condition: service_healthy
       - migration
       - collect_static
       - create_cache
       - django_tests
     command:
-      "gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
+      "bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
 
   migration:
     build: imgcollector
