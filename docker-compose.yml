@@ -53,7 +53,7 @@ services:
 
   django_tests:
     build: imgcollector
-    command: "bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python manage.py test"
+    command: "python manage.py test"
     env_file: .env
     depends_on:
       - db
