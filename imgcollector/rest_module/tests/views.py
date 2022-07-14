@@ -16,7 +16,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(resp.status_code, 401)
 
     def _test_get_users(self) -> None:
-        header = {"Authorization": f"Token {self.api_key}"}
+        header = {"AUTHORIZATION": f"Token {self.api_key}"}
         resp = Client().get("/users/", **header)
         self.assertEqual(resp.status_code, 200)
 
@@ -25,7 +25,7 @@ class ViewsTestCase(TestCase):
         self.assertEqual(resp.status_code, 401)
 
     def _test_get_images(self) -> None:
-        header = {"Authorization": f"Token {self.api_key}"}
+        header = {"AUTHORIZATION": f"Token {self.api_key}"}
         resp = Client().get("/images/", **header)
         self.assertEqual(resp.status_code, 200)
 
