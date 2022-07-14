@@ -26,11 +26,7 @@ services:
 
   after_start_task:
     build: imgcollector
-    command:
-      - "python manage.py migrate"
-      - "python manage.py collectstatic"
-      - "python manage.py createcachetable"
-      - "python manage.py test"
+    command: "python manage.py migrate && python manage.py collectstatic && python manage.py createcachetable && python manage.py test"
     env_file: .env
     volumes:
       - /static:/app/static
