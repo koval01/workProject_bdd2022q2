@@ -44,8 +44,8 @@ class ViewsTestCase(TestCase):
         self.assert_("token" in resp_generate_key.json().keys())
         self.api_key = resp_generate_key.json()["token"]
 
-        self._test_get_users()
         self._test_get_images()
+        self._test_get_users()
 
     def test_post_register(self) -> None:
         resp_null = Client().post("/register/")
