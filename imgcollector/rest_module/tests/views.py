@@ -3,8 +3,8 @@ from uuid import uuid4
 
 
 class ViewsTestCase(TestCase):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, *args, **kwargs) -> None:
+        super(*args, **kwargs).__init__()
 
         self.username = f"user_{uuid4().hex}"
         self.password = uuid4().hex
