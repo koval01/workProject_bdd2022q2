@@ -23,6 +23,7 @@ services:
       - migration
       - collect_static
       - create_cache
+      - django_tests
     command:
       "gunicorn --workers=3 --threads=3 --bind=0.0.0.0:8000 imgcollector.wsgi:application"
 
@@ -45,6 +46,13 @@ services:
   create_cache:
     build: imgcollector
     command: "python manage.py createcachetable"
+    env_file: .env
+    depends_on:
+      - db
+
+  django_tests:
+    build: imgcollector
+    command: "python manage.py test"
     env_file: .env
     depends_on:
       - db
