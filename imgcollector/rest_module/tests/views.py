@@ -61,7 +61,7 @@ class ViewsTestCase(TestCase):
         self.assert_(
             len([
                 i for i in resp_registered.json().items()
-                if i in ["username", "email", "first_name", "last_name"]
+                if i[0] in ["username", "email", "first_name", "last_name"]
             ]) == 4
         )
         self._register_key()
