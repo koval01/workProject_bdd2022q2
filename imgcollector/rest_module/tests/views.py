@@ -22,8 +22,10 @@ class ViewsTestCase(TestCase):
         self.assertEqual(resp.status_code, 401)
 
     def _test_get_users(self, with_image: bool = False, random_user: bool = False) -> None:
-        _condition = self.random_user["token"] if random_user else self.api_key
-        self.assert_(_condition != "")
+        if random_user:
+            self.assert_(self.random_user["token"] != "")
+        else:
+            self.assert_(self.api_key != "")
 
         # generate random user
         self._register_user(random_user=True)
