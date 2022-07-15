@@ -34,7 +34,7 @@ class ViewsTestCase(TestCase):
         })
 
         # try order other user data
-        resp_other_user = Client().get("/users/2", HTTP_AUTHORIZATION=f"Token {self.api_key}")
+        resp_other_user = Client().get("/users/2/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
         self.assertEqual(resp_other_user.status_code, 403)  # only superuser
         self.assertEqual(resp_other_user.json(), {
             "detail": "You do not have permission to perform this action."
