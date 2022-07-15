@@ -56,7 +56,7 @@ class ViewsTestCase(TestCase):
         self.assert_(resp_image.json()["name"] == self.image_name)
         self.assert_(resp_image.json()["id"] == 1)
 
-    def test_images_upload(self) -> None:
+    def _test_images_upload(self) -> None:
         self.assert_(self.api_key != "")
 
         image = Image.new('RGBA', size=(50, 50), color=(155, 0, 0))
@@ -84,6 +84,8 @@ class ViewsTestCase(TestCase):
             "previous": None,
             "results": []
         })
+
+        self._test_images_upload()
 
     def test_get_register(self) -> None:
         resp = Client().get("/register/")
