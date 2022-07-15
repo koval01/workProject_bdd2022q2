@@ -96,7 +96,8 @@ class ViewsTestCase(TestCase):
         self._test_get_users(with_image=True, random_user=random_user)
 
     def _test_get_images(self, random_user: bool = False) -> None:
-        self.assert_(self.api_key != "")
+        token = self.random_user["token"] if random_user else self.api_key
+        self.assert_(token != "")
 
         resp = Client().get("/images/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
         self.assertEqual(resp.status_code, 200)
