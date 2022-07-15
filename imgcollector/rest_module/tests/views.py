@@ -20,7 +20,7 @@ class ViewsTestCase(TestCase):
         resp = Client().get("/users/")
         self.assertEqual(resp.status_code, 401)
 
-    def _test_get_users(self) -> None:
+    def _test_get_users(self, with_image: bool = False) -> None:
         self.assert_(self.api_key != "")
 
         resp = Client().get("/users/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
@@ -28,6 +28,8 @@ class ViewsTestCase(TestCase):
         self.assertEqual(resp.json(), {
             "detail": "You do not have permission to perform this action."
         })
+
+        photos = [1] if with_image else []
 
         # test user get
         resp_user_0 = Client().get("/users/1/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
@@ -39,7 +41,7 @@ class ViewsTestCase(TestCase):
             "is_active": True,
             "is_staff": False,
             "customer_type": "basic",
-            "photos": []
+            "photos": photos
         })
 
     def test_images_without_auth(self) -> None:
@@ -73,6 +75,8 @@ class ViewsTestCase(TestCase):
             self.assert_(resp.json()["name"] == self.image_name)
             self.assert_(resp.json()["id"] == 1)
 
+        self._test_get_users(with_image=True)
+
     def _test_get_images(self) -> None:
         self.assert_(self.api_key != "")
 
@@ -100,8 +104,8 @@ class ViewsTestCase(TestCase):
         self.assert_("token" in resp_generate_key.json().keys())
         self.api_key = resp_generate_key.json()["token"]
 
-        self._test_get_images()
         self._test_get_users()
+        self._test_get_images()
 
     def _test_refresh_jwt(self) -> None:
         self.assert_(self.refresh != "")
