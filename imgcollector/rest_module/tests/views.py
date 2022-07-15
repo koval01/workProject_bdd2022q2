@@ -9,12 +9,13 @@ class ViewsTestCase(TestCase):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        self.image_name = "test image"
-        self.username = f"user_{uuid4().hex}"
-        self.password = uuid4().hex
-        self.email = f"{uuid4().hex}@mail.example"
-        self.api_key = ""
-        self.refresh = ""
+        self.image_name:    str = "test image"
+        self.username:      str = f"user_{uuid4().hex}"
+        self.password:      str = uuid4().hex
+        self.email:         str = f"{uuid4().hex}@mail.example"
+        self.api_key:       str = ""
+        self.refresh:       str = ""
+        self.random_user:   dict = {}
 
     def test_users_without_auth(self) -> None:
         resp = Client().get("/users/")
@@ -122,7 +123,7 @@ class ViewsTestCase(TestCase):
 
         token = resp_generate_key.json()["token"]
         if random_user:
-            self.random_user = {"token": token}
+            self.random_user["token"] = token
         else:
             self.api_key = token
 
@@ -177,9 +178,9 @@ class ViewsTestCase(TestCase):
         )
 
         if random_user:
-            self.random_user = {
-                "username": username, "password": password, "email": email
-            }
+            self.random_user["username"] = username
+            self.random_user["password"] = password
+            self.random_user["email"] = email
 
     def test_post_register(self) -> None:
         resp_null = Client().post("/register/")
