@@ -99,7 +99,7 @@ class ViewsTestCase(TestCase):
         token = self.random_user["token"] if random_user else self.api_key
         self.assert_(token != "")
 
-        resp = Client().get("/images/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
+        resp = Client().get("/images/", HTTP_AUTHORIZATION=f"Token {token}")
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json(), {
             "count": 0,
