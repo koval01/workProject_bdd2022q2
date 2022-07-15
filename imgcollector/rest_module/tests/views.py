@@ -69,22 +69,27 @@ class ViewsTestCase(TestCase):
         self.assert_(resp_image.json()["name"] == self.image_name)
         self.assert_(resp_image.json()["id"] == 1)
 
-    def _test_images_upload(self) -> None:
+    def _test_images_upload(self, random_user: bool = False) -> None:
         self.assert_(self.api_key != "")
 
         image = Image.new('RGBA', size=(50, 50), color=(155, 0, 0))
         file = tempfile.NamedTemporaryFile(suffix='.png')
         image.save(file)
 
+        if random_user:
+            token = self.random_user["token"]
+        else:
+            token = self.api_key
+
         with open(file.name, 'rb') as data:
             resp = Client().post("/images/", {
                 "name": self.image_name, "image": data},
-                                 HTTP_AUTHORIZATION=f"Token {self.api_key}")
+                                 HTTP_AUTHORIZATION=f"Token {token}")
             self.assertEqual(resp.status_code, 201)
             self.assert_(resp.json()["image"] is None)
             self.assert_(resp.json()["creator"] == self.username)
             self.assert_(resp.json()["name"] == self.image_name)
-            self.assert_(resp.json()["id"] == 1)
+            self.assert_(resp.json()["id"] == 2 if random_user else 1)
 
         self._test_get_users(with_image=True)
 
@@ -106,14 +111,19 @@ class ViewsTestCase(TestCase):
         resp = Client().get("/register/")
         self.assertEqual(resp.status_code, 405)
 
-    def _register_key(self) -> None:
+    def _register_key(self, random_user: bool = True) -> None:
         resp_generate_key = Client().post("/api-token-auth/", {
             "username": self.username,
             "password": self.password
         })
         self.assertEqual(resp_generate_key.status_code, 200)
         self.assert_("token" in resp_generate_key.json().keys())
-        self.api_key = resp_generate_key.json()["token"]
+
+        token = resp_generate_key.json()["token"]
+        if random_user:
+            self.random_user = {"token": token}
+        else:
+            self.api_key = token
 
         self._test_get_users()
         self._test_get_images()
@@ -165,6 +175,11 @@ class ViewsTestCase(TestCase):
             ]) == len(test_fields)
         )
 
+        if random_user:
+            self.random_user = {
+                "username": username, "password": password, "email": email
+            }
+
     def test_post_register(self) -> None:
         resp_null = Client().post("/register/")
         self.assertEqual(resp_null.status_code, 400)
@@ -190,6 +205,11 @@ class ViewsTestCase(TestCase):
 
         self._register_key()
         self._test_jwt_token()
+
+        conf = {"random_user": True}
+        self._register_user(**conf)
+        self._register_key(**conf)
+        self._test_images_upload(**conf)
 
     def test_get_api_token_auth(self) -> None:
         resp = Client().get("/api-token-auth/")
