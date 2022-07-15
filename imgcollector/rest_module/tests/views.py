@@ -1,4 +1,7 @@
+import tempfile
+
 from django.test import TestCase, Client
+from PIL import Image
 from uuid import uuid4
 
 
@@ -6,6 +9,7 @@ class ViewsTestCase(TestCase):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
+        self.image_name = "test image"
         self.username = f"user_{uuid4().hex}"
         self.password = uuid4().hex
         self.email = f"{uuid4().hex}@mail.example"
@@ -41,6 +45,33 @@ class ViewsTestCase(TestCase):
     def test_images_without_auth(self) -> None:
         resp = Client().get("/images/")
         self.assertEqual(resp.status_code, 401)
+
+    def _test_get_image_0(self) -> None:
+        self.assert_(self.api_key != "")
+
+        resp_image = Client().get("/images/1/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
+        self.assertEqual(resp_image.status_code, 200)
+        self.assert_(resp_image.json()["image"] is None)
+        self.assert_(resp_image.json()["creator"] == self.username)
+        self.assert_(resp_image.json()["name"] == self.image_name)
+        self.assert_(resp_image.json()["id"] == 1)
+
+    def test_images_upload(self) -> None:
+        self.assert_(self.api_key != "")
+
+        image = Image.new('RGBA', size=(50, 50), color=(155, 0, 0))
+        file = tempfile.NamedTemporaryFile(suffix='.png')
+        image.save(file)
+
+        with open(file.name, 'rb') as data:
+            resp = Client().post("/images/", {
+                "name": self.image_name, "image": data},
+                                 HTTP_AUTHORIZATION=f"Token {self.api_key}")
+            self.assertEqual(resp.status_code, 201)
+            self.assert_(resp.json()["image"] is None)
+            self.assert_(resp.json()["creator"] == self.username)
+            self.assert_(resp.json()["name"] == self.image_name)
+            self.assert_(resp.json()["id"] == 1)
 
     def _test_get_images(self) -> None:
         self.assert_(self.api_key != "")
