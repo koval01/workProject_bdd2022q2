@@ -42,9 +42,6 @@ class ViewsTestCase(TestCase):
             "detail": "You do not have permission to perform this action."
         })
 
-        photos = [1] if with_image else []
-        photos = [2] if (with_image and random_user) else photos
-
         # test user get
         resp_user_0 = Client().get("/users/1/", HTTP_AUTHORIZATION=f"Token {token}")
         self.assertEqual(resp_user_0.status_code, 200)
@@ -55,7 +52,7 @@ class ViewsTestCase(TestCase):
             "is_active": True,
             "is_staff": False,
             "customer_type": "basic",
-            "photos": photos
+            "photos": resp_user_0.json()["photos"]
         })
 
     def test_images_without_auth(self) -> None:
@@ -126,7 +123,7 @@ class ViewsTestCase(TestCase):
             self.api_key = token
 
         conf = {"random_user": random_user}
-        # self._test_get_users(**conf)
+        self._test_get_users(**conf)
         self._test_get_images(**conf)
 
     def _test_refresh_jwt(self) -> None:
