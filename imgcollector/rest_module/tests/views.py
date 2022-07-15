@@ -29,20 +29,13 @@ class ViewsTestCase(TestCase):
         resp_user_0 = Client().get("/users/1/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
         self.assertEqual(resp_user_0.status_code, 200)
         self.assertEqual(resp_user_0.json(), {
-            "count": 1,
-            "next": None,
-            "previous": None,
-            "results": [
-                {
-                    "id": 1,
-                    "username": self.username,
-                    "email": self.email,
-                    "is_active": True,
-                    "is_staff": False,
-                    "customer_type": "basic",
-                    "photos": []
-                }
-            ]
+            "id": 1,
+            "username": self.username,
+            "email": self.email,
+            "is_active": True,
+            "is_staff": False,
+            "customer_type": "basic",
+            "photos": []
         })
 
     def test_images_without_auth(self) -> None:
