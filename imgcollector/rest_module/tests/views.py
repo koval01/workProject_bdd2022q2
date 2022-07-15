@@ -43,7 +43,7 @@ class ViewsTestCase(TestCase):
         })
 
         photos = [1] if with_image else []
-        photos = [2] if with_image and random_user else photos
+        photos = [2] if (with_image and random_user) else photos
 
         # test user get
         resp_user_0 = Client().get("/users/1/", HTTP_AUTHORIZATION=f"Token {token}")
@@ -126,7 +126,7 @@ class ViewsTestCase(TestCase):
             self.api_key = token
 
         conf = {"random_user": random_user}
-        self._test_get_users(**conf)
+        # self._test_get_users(**conf)
         self._test_get_images(**conf)
 
     def _test_refresh_jwt(self) -> None:
