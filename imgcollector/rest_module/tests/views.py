@@ -22,23 +22,21 @@ class ViewsTestCase(TestCase):
         self.assertEqual(resp.status_code, 401)
 
     def _test_get_users(self, with_image: bool = False, random_user: bool = False) -> None:
-        if random_user:
-            self.assert_(self.random_user["token"] != "")
-        else:
-            self.assert_(self.api_key != "")
+        token = self.random_user["token"] if random_user else self.api_key
+        self.assert_(token != "")
 
         # generate random user
         self._register_user(random_user=True)
 
         # try order all users
-        resp_all_users = Client().get("/users/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
+        resp_all_users = Client().get("/users/", HTTP_AUTHORIZATION=f"Token {token}")
         self.assertEqual(resp_all_users.status_code, 403)  # only superuser
         self.assertEqual(resp_all_users.json(), {
             "detail": "You do not have permission to perform this action."
         })
 
         # try order other user data
-        resp_other_user = Client().get("/users/2/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
+        resp_other_user = Client().get("/users/2/", HTTP_AUTHORIZATION=f"Token {token}")
         self.assertEqual(resp_other_user.status_code, 403)  # only superuser
         self.assertEqual(resp_other_user.json(), {
             "detail": "You do not have permission to perform this action."
@@ -47,7 +45,7 @@ class ViewsTestCase(TestCase):
         photos = [1] if with_image else []
 
         # test user get
-        resp_user_0 = Client().get("/users/1/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
+        resp_user_0 = Client().get("/users/1/", HTTP_AUTHORIZATION=f"Token {token}")
         self.assertEqual(resp_user_0.status_code, 200)
         self.assertEqual(resp_user_0.json(), {
             "id": 1,
