@@ -26,7 +26,7 @@ class ViewsTestCase(TestCase):
         })
 
         # test user get
-        resp = Client().get("/users/0", HTTP_AUTHORIZATION=f"Token {self.api_key}")
+        resp = Client().get("/users/0/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json(), {
             "count": 1,
