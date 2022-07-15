@@ -21,7 +21,10 @@ class ViewsTestCase(TestCase):
         self.assertEqual(resp.status_code, 401)
 
     def _test_get_users(self, with_image: bool = False, random_user: bool = False) -> None:
-        _condition = (self.random_user["token"] != "") if random_user else (self.api_key != "")
+        if random_user:
+            _condition = (self.random_user["token"] != "")
+        else:
+            _condition = (self.api_key != "")
         self.assert_(_condition)
 
         # generate random user
@@ -207,10 +210,10 @@ class ViewsTestCase(TestCase):
         self._register_key()
         self._test_jwt_token()
 
-        # conf = {"random_user": True}
-        # self._register_user(**conf)
-        # self._register_key(**conf)
-        # self._test_images_upload(**conf)
+        conf = {"random_user": True}
+        self._register_user(**conf)
+        self._register_key(**conf)
+        self._test_images_upload(**conf)
 
     def test_get_api_token_auth(self) -> None:
         resp = Client().get("/api-token-auth/")
