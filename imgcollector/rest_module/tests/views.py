@@ -209,7 +209,7 @@ class ViewsTestCase(TestCase):
         conf = {"random_user": True}
         self._register_user(**conf)
         self._register_key(**conf)
-        self._test_images_upload(**conf)
+        self._test_get_images(**conf)
 
     def test_get_api_token_auth(self) -> None:
         resp = Client().get("/api-token-auth/")
