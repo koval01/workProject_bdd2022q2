@@ -20,8 +20,8 @@ class ViewsTestCase(TestCase):
         resp = Client().get("/users/")
         self.assertEqual(resp.status_code, 401)
 
-    def _test_get_users(self, with_image: bool = False) -> None:
-        self.assert_(self.api_key != "")
+    def _test_get_users(self, with_image: bool = False, random_user: bool = False) -> None:
+        self.assert_(self.random_user["token"] != "" if random_user else self.api_key != "")
 
         # generate random user
         self._register_user(random_user=True)
@@ -91,7 +91,7 @@ class ViewsTestCase(TestCase):
             self.assert_(resp.json()["name"] == self.image_name)
             self.assert_(resp.json()["id"] == 2 if random_user else 1)
 
-        self._test_get_users(with_image=True)
+        self._test_get_users(with_image=True, random_user=random_user)
 
     def _test_get_images(self) -> None:
         self.assert_(self.api_key != "")
