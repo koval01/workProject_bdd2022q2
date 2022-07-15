@@ -43,6 +43,7 @@ class ViewsTestCase(TestCase):
         })
 
         photos = [1] if with_image else []
+        photos = [2] if with_image and random_user else photos
 
         # test user get
         resp_user_0 = Client().get("/users/1/", HTTP_AUTHORIZATION=f"Token {token}")
