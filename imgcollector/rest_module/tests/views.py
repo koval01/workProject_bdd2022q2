@@ -104,7 +104,7 @@ class ViewsTestCase(TestCase):
             "results": []
         })
 
-        self._test_images_upload()
+        self._test_images_upload(random_user=random_user)
 
     def test_get_register(self) -> None:
         resp = Client().get("/register/")
