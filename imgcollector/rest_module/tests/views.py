@@ -206,10 +206,10 @@ class ViewsTestCase(TestCase):
         self._register_key()
         self._test_jwt_token()
 
-        conf = {"random_user": True}
-        self._register_user(**conf)
-        self._register_key(**conf)
-        self._test_images_upload(**conf)
+        # conf = {"random_user": True}
+        # self._register_user(**conf)
+        # self._register_key(**conf)
+        # self._test_images_upload(**conf)
 
     def test_get_api_token_auth(self) -> None:
         resp = Client().get("/api-token-auth/")
