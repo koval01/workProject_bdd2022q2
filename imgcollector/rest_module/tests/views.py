@@ -72,16 +72,12 @@ class ViewsTestCase(TestCase):
         self.assert_(resp_image.json()["id"] == 1)
 
     def _test_images_upload(self, random_user: bool = False) -> None:
-        self.assert_(self.api_key != "")
+        token = self.random_user["token"] if random_user else self.api_key
+        self.assert_(token != "")
 
         image = Image.new('RGBA', size=(50, 50), color=(155, 0, 0))
         file = tempfile.NamedTemporaryFile(suffix='.png')
         image.save(file)
-
-        if random_user:
-            token = self.random_user["token"]
-        else:
-            token = self.api_key
 
         with open(file.name, 'rb') as data:
             resp = Client().post("/images/", {
