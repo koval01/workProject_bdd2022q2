@@ -97,7 +97,7 @@ class ViewsTestCase(TestCase):
 
         self._test_get_users(with_image=True, random_user=random_user)
 
-    def _test_get_images(self) -> None:
+    def _test_get_images(self, random_user: bool = False) -> None:
         self.assert_(self.api_key != "")
 
         resp = Client().get("/images/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
@@ -129,8 +129,9 @@ class ViewsTestCase(TestCase):
         else:
             self.api_key = token
 
-        self._test_get_users()
-        self._test_get_images()
+        conf = {"random_user": random_user}
+        self._test_get_users(**conf)
+        self._test_get_images(**conf)
 
     def _test_refresh_jwt(self) -> None:
         self.assert_(self.refresh != "")
