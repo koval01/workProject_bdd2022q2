@@ -25,6 +25,26 @@ class ViewsTestCase(TestCase):
             "detail": "You do not have permission to perform this action."
         })
 
+        # test user get
+        resp = Client().get("/users/0", HTTP_AUTHORIZATION=f"Token {self.api_key}")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json(), {
+            "count": 1,
+            "next": None,
+            "previous": None,
+            "results": [
+                {
+                    "id": 0,
+                    "username": self.username,
+                    "email": self.email,
+                    "is_active": True,
+                    "is_staff": False,
+                    "customer_type": "basic",
+                    "photos": []
+                }
+            ]
+        })
+
     def test_images_without_auth(self) -> None:
         resp = Client().get("/images/")
         self.assertEqual(resp.status_code, 401)
