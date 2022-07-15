@@ -23,9 +23,20 @@ class ViewsTestCase(TestCase):
     def _test_get_users(self, with_image: bool = False) -> None:
         self.assert_(self.api_key != "")
 
-        resp = Client().get("/users/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
-        self.assertEqual(resp.status_code, 403)  # only superuser
-        self.assertEqual(resp.json(), {
+        # generate random user
+        self._register_user(random_user=True)
+
+        # try order all users
+        resp_all_users = Client().get("/users/", HTTP_AUTHORIZATION=f"Token {self.api_key}")
+        self.assertEqual(resp_all_users.status_code, 403)  # only superuser
+        self.assertEqual(resp_all_users.json(), {
+            "detail": "You do not have permission to perform this action."
+        })
+
+        # try order other user data
+        resp_other_user = Client().get("/users/2", HTTP_AUTHORIZATION=f"Token {self.api_key}")
+        self.assertEqual(resp_other_user.status_code, 403)  # only superuser
+        self.assertEqual(resp_other_user.json(), {
             "detail": "You do not have permission to perform this action."
         })
 
@@ -131,6 +142,29 @@ class ViewsTestCase(TestCase):
         ]) == len(test_fields))
         self.refresh = resp.json()["refresh"]
 
+    def _register_user(self, random_user: bool = False) -> None:
+        username = f"user_{uuid4().hex}" \
+            if random_user else self.username
+        password = uuid4().hex \
+            if random_user else self.password
+        email = f"{uuid4().hex}@mail.example" \
+            if random_user else self.email
+
+        resp_registered = Client().post("/register/", {
+            "username": username,
+            "password": password,
+            "password2": password,
+            "email": email
+        })
+        test_fields = ["username", "email", "first_name", "last_name"]
+        self.assertEqual(resp_registered.status_code, 201)
+        self.assert_(
+            len([
+                i for i in resp_registered.json().keys()
+                if i in test_fields
+            ]) == len(test_fields)
+        )
+
     def test_post_register(self) -> None:
         resp_null = Client().post("/register/")
         self.assertEqual(resp_null.status_code, 400)
@@ -152,20 +186,7 @@ class ViewsTestCase(TestCase):
             "password2": ["This field may not be blank."]
         })
 
-        resp_registered = Client().post("/register/", {
-            "username": self.username,
-            "password": self.password,
-            "password2": self.password,
-            "email": self.email
-        })
-        test_fields = ["username", "email", "first_name", "last_name"]
-        self.assertEqual(resp_registered.status_code, 201)
-        self.assert_(
-            len([
-                i for i in resp_registered.json().keys()
-                if i in test_fields
-            ]) == len(test_fields)
-        )
+        self._register_user()
 
         self._register_key()
         self._test_jwt_token()
