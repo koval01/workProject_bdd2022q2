@@ -96,10 +96,10 @@ class ViewsTestCase(TestCase):
         resp = Client().get("/images/", HTTP_AUTHORIZATION=f"Token {token}")
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json(), {
-            "count": 0,
+            "count": resp.json()["count"],
             "next": None,
             "previous": None,
-            "results": []
+            "results": resp.json()["results"]
         })
 
         self._test_images_upload(random_user=random_user)
