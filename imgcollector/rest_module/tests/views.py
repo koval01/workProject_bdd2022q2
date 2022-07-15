@@ -87,7 +87,7 @@ class ViewsTestCase(TestCase):
             self.assert_(resp.json()["image"] is None)
             self.assert_(resp.json()["creator"] == self.username)
             self.assert_(resp.json()["name"] == self.image_name)
-            self.assert_(resp.json()["id"] == 2 if random_user else 1)
+            self.assert_(type(resp.json()["id"]) == int)
 
         self._test_get_users(with_image=True, random_user=random_user)
 
